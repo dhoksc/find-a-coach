@@ -4,7 +4,6 @@ export default {
       userEmail: payload.email,
       message: payload.message,
     };
-
     const response = await fetch(
       `https://find-a-coach-b455b-default-rtdb.europe-west1.firebasedatabase.app/requests/${payload.coachId}.json`,
       {
@@ -16,7 +15,9 @@ export default {
     const responseData = await response.json();
 
     if (!response.ok) {
-      const error = new Error(response.message || "Failed to send request");
+      const error = new Error(
+        responseData.message || "Failed to send request."
+      );
       throw error;
     }
 
@@ -27,14 +28,16 @@ export default {
   },
   async fetchRequests(context) {
     const coachId = context.rootGetters.userId;
+    const token = context.rootGetters.token;
     const response = await fetch(
-      `https://find-a-coach-b455b-default-rtdb.europe-west1.firebasedatabase.app/requests/${coachId}.json`
+      `https://find-a-coach-b455b-default-rtdb.europe-west1.firebasedatabase.app/requests/${coachId}.json?auth=` +
+        token
     );
     const responseData = await response.json();
 
     if (!response.ok) {
       const error = new Error(
-        responseData.message || "Failed to fetch requests"
+        responseData.message || "Failed to fetch requests."
       );
       throw error;
     }
@@ -44,13 +47,13 @@ export default {
     for (const key in responseData) {
       const request = {
         id: key,
-        coachId,
+        coachId: coachId,
         userEmail: responseData[key].userEmail,
         message: responseData[key].message,
       };
       requests.push(request);
-
-      context.commit("setRequests", requests);
     }
+
+    context.commit("setRequests", requests);
   },
 };

@@ -9,16 +9,21 @@ export default {
       areas: data.areas,
     };
 
+    const token = context.rootGetters.token;
+
     const response = await fetch(
-      `https://find-a-coach-b455b-default-rtdb.europe-west1.firebasedatabase.app/coaches/${userId}.json`,
+      `https://find-a-coach-b455b-default-rtdb.europe-west1.firebasedatabase.app/coaches/${userId}.json?auth=` +
+        token,
       {
         method: "PUT",
         body: JSON.stringify(coachData),
       }
     );
 
+    // const responseData = await response.json();
+
     if (!response.ok) {
-      // error...
+      // error ...
     }
 
     context.commit("registerCoach", {
@@ -32,7 +37,7 @@ export default {
     }
 
     const response = await fetch(
-      "https://find-a-coach-b455b-default-rtdb.europe-west1.firebasedatabase.app/coaches.json"
+      `https://find-a-coach-b455b-default-rtdb.europe-west1.firebasedatabase.app/coaches.json`
     );
     const responseData = await response.json();
 
